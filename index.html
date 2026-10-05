@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الخامس العلمي الذكية 🚀 | Firebase Cloud Edition</title>
+    <title>منصة الخامس العلمي الذكية 🚀 | رفيق التفوق</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- مكتبات Firebase SDK (Compat) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <!-- Firebase SDKs (CDN Version Compatible with Direct Browser Execution) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
     <style>
         :root[data-theme="light"] {
@@ -158,12 +159,17 @@
             border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer;
         }
 
-        /* Status Pills */
-        .status-pill {
-            font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;
-            background: rgba(255,255,255,0.18); padding: 4px 12px; border-radius: 20px; margin: 4px 3px 0 3px;
+        /* Pomodoro Widget */
+        .pomodoro-box { text-align: center; padding: 20px; }
+        .timer-display { font-size: 3.5rem; font-weight: 900; color: var(--primary); margin: 15px 0; font-family: monospace; }
+        
+        .status-wrapper { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+        .tg-status {
+            font-size: 0.8rem; display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px;
         }
         .pulse-dot { width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399; }
+        .pulse-dot-blue { background: #60a5fa; box-shadow: 0 0 8px #60a5fa; }
     </style>
 </head>
 <body>
@@ -171,17 +177,16 @@
     <header>
         <div class="header-tools">
             <button class="icon-btn" onclick="toggleTheme()" title="تغيير المظهر"><i class="fas fa-moon" id="theme-icon"></i></button>
-            <button class="icon-btn" onclick="openPomodoro()" title="مؤقت التركيز"><i class="fas fa-stopwatch"></i></button>
+            <button class="icon-btn" onclick="openPomodoro()" title="مؤقت التركيز (بومودورو)"><i class="fas fa-stopwatch"></i></button>
             <button class="icon-btn" onclick="exportData()" title="تصدير النسخة الاحتياطية"><i class="fas fa-download"></i></button>
             <button class="icon-btn" onclick="importData()" title="استعادة النسخة الاحتياطية"><i class="fas fa-upload"></i></button>
         </div>
         <button id="back-btn" class="btn btn-outline" style="position:absolute; right:20px; top:20px; display:none;" onclick="goHome()">العودة 🏠</button>
         <h1 id="header-title">الخامس العلمي 🚀</h1>
         <p id="header-quote">منصتك الذكية للمراجعة والتفوق الأكاديمي</p>
-        
-        <div style="display:flex; justify-content:center; flex-wrap:wrap;">
-            <div class="status-pill"><span class="pulse-dot"></span> متصل بـ Firebase (vibe-srar)</div>
-            <div class="status-pill"><i class="fab fa-telegram"></i> بوت التليغرام نشط</div>
+        <div class="status-wrapper">
+            <div class="tg-status"><span class="pulse-dot"></span> بوت التليغرام متصل ونشط</div>
+            <div class="tg-status" id="fb-status-badge"><span class="pulse-dot pulse-dot-blue"></span> Firebase متصل بالسحابة 🔥</div>
         </div>
     </header>
 
@@ -244,7 +249,7 @@
                     <span id="file-name-display" style="font-size:0.85rem; color:var(--text-muted);">لم يتم اختيار ملف</span>
                 </div>
 
-                <button class="btn" onclick="addTopic()" style="width: 100%; justify-content: center;"><i class="fas fa-cloud-upload-alt"></i> حفظ وحفظ المزامنة السحابية</button>
+                <button class="btn" onclick="addTopic()" style="width: 100%; justify-content: center;"><i class="fas fa-save"></i> حفظ الموضوع وجدولته</button>
             </div>
 
             <div class="topic-list" id="topic-list"></div>
@@ -253,10 +258,10 @@
 
     <!-- modal مؤقت بومودورو -->
     <div id="pomodoro-modal" class="modal">
-        <div class="modal-content" style="text-align:center;">
+        <div class="modal-content pomodoro-box">
             <button class="close-modal" onclick="closeModal('pomodoro-modal')">✕</button>
             <h2>⏱️ مؤقت التركيز (Pomodoro)</h2>
-            <div id="timer-display" style="font-size: 3.5rem; font-weight: 900; color: var(--primary); margin: 15px 0; font-family: monospace;">25:00</div>
+            <div class="timer-display" id="timer-display">25:00</div>
             <div style="display:flex; gap:10px; justify-content:center;">
                 <button class="btn" id="start-timer-btn" onclick="togglePomodoro()"><i class="fas fa-play"></i> بدء</button>
                 <button class="btn btn-danger" onclick="resetPomodoro()"><i class="fas fa-redo"></i> إعادة ضبط</button>
@@ -273,7 +278,7 @@
     </div>
 
     <script>
-        // --- إعدادات Firebase الخاصة بحسابك ---
+        // --- تهيئة وتكوين Firebase ---
         const firebaseConfig = {
             apiKey: "AIzaSyAFW_FY8zO_Y0CdBuvHlfY0afSAaDzGnVY",
             authDomain: "vibe-srar.firebaseapp.com",
@@ -285,11 +290,12 @@
             measurementId: "G-6HJPC9KQLV"
         };
 
-        // تهيئة Firebase Realtime Database
-        firebase.initializeApp(firebaseConfig);
+        // تهيئة تطبيق Firebase والخدمات
+        const app = firebase.initializeApp(firebaseConfig);
+        const analytics = firebase.analytics();
         const db = firebase.database();
 
-        // إعدادات بوت التليغرام
+        // إعدادات بوت التليغرام المدمجة
         const TG_CONFIG = {
             botToken: '8846376320:AAH7BP7GMqfxrNEMsGJJ7U1LbBkucasm04Q',
             chatId: '8985579189'
@@ -305,48 +311,67 @@
             { id: 'islamic', name: 'التربية الإسلامية', icon: '🕌' }
         ];
 
-        let studyData = {};
-        let streakData = { count: 0, lastDate: null };
+        let studyData = JSON.parse(localStorage.getItem('fifthGradeDB_v2')) || {};
+        let streakData = JSON.parse(localStorage.getItem('fifthGradeStreak')) || { count: 0, lastDate: null };
         let currentSubject = '';
         let pendingTelegramNotification = false;
 
-        // بدء الربط والمزامنة اللحظية مع Firebase
-        function initFirebaseSync() {
-            // الاستماع المباشر لجدول الدراسة
-            db.ref('fifthGradeDB').on('value', (snapshot) => {
-                const data = snapshot.val();
-                studyData = data || {};
-                renderSubjects();
-                updateGlobalStats();
-                if (currentSubject) renderTopics();
-            });
+        // تهيئة التطبيق والمزامنة مع Firebase
+        function init() {
+            updateStreak();
+            renderSubjects();
+            updateGlobalStats();
+            initTelegramAutoScheduler();
+            initFirebaseSync();
+        }
 
-            // الاستماع المباشر لسلسلة الإنجاز (Streak)
-            db.ref('fifthGradeStreak').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    streakData = data;
-                    updateStreak();
+        // المزامنة الحية المباشرة مع Realtime Database
+        function initFirebaseSync() {
+            db.ref('fifthGradeDB_v2').on('value', (snapshot) => {
+                const cloudData = snapshot.val();
+                if (cloudData) {
+                    studyData = cloudData;
+                    localStorage.setItem('fifthGradeDB_v2', JSON.stringify(studyData));
+                    if (currentSubject) renderTopics();
+                    renderSubjects();
+                    updateGlobalStats();
                 }
             });
 
-            initTelegramAutoScheduler();
+            db.ref('fifthGradeStreak').on('value', (snapshot) => {
+                const cloudStreak = snapshot.val();
+                if (cloudStreak) {
+                    streakData = cloudStreak;
+                    localStorage.setItem('fifthGradeStreak', JSON.stringify(streakData));
+                    updateStreak();
+                }
+            });
         }
 
+        // إحصائيات السلسلة (Streak)
         function updateStreak() {
-            document.getElementById('streak-count').innerText = `${streakData.count || 0} 🔥`;
+            const today = new Date().toDateString();
+            if (streakData.lastDate) {
+                const last = new Date(streakData.lastDate);
+                const diffTime = Math.abs(new Date(today) - last);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                if (diffDays > 1) streakData.count = 0; // انقطعت السلسلة
+            }
+            document.getElementById('streak-count').innerText = `${streakData.count} 🔥`;
         }
 
         function markStreakActive() {
             const today = new Date().toDateString();
             if (streakData.lastDate !== today) {
-                streakData.count = (streakData.count || 0) + 1;
+                streakData.count += 1;
                 streakData.lastDate = today;
+                localStorage.setItem('fifthGradeStreak', JSON.stringify(streakData));
                 db.ref('fifthGradeStreak').set(streakData);
                 updateStreak();
             }
         }
 
+        // عرض المواد
         function renderSubjects() {
             const grid = document.getElementById('subjects-grid');
             grid.innerHTML = '';
@@ -387,6 +412,7 @@
             updateGlobalStats();
         }
 
+        // إضافة موضوع جديد
         function addTopic() {
             const titleInput = document.getElementById('topic-input');
             const notesInput = document.getElementById('topic-notes');
@@ -419,16 +445,14 @@
                 title: title,
                 notes: notes,
                 level: 0,
-                nextReview: now + (24 * 60 * 60 * 1000),
+                nextReview: now + (24 * 60 * 60 * 1000), // بعد 24 ساعة
                 file: fileObj
             };
 
-            if (!studyData[currentSubject]) studyData[currentSubject] = [];
             studyData[currentSubject].push(newTopic);
-            
-            // حفظ سحابي في Firebase
-            saveDataToFirebase();
+            saveData();
 
+            // إعادة ضبط الإدخالات
             document.getElementById('topic-input').value = '';
             document.getElementById('topic-notes').value = '';
             document.getElementById('topic-file').value = '';
@@ -437,10 +461,12 @@
             renderTopics();
             markStreakActive();
             
+            // إرسال إشعار فوري للتليغرام
             const subName = subjects.find(s => s.id === currentSubject).name;
-            sendTelegramMessage(`🆕 <b>تم إضافة موضوع جديد ومزامنته سحابياً!</b>\n📚 <b>المادة:</b> ${subName}\n📖 <b>الموضوع:</b> ${title}`);
+            sendTelegramMessage(`🆕 <b>تم إضافة موضوع جديد!</b>\n📚 <b>المادة:</b> ${subName}\n📖 <b>الموضوع:</b> ${title}`);
         }
 
+        // عرض المواضيع
         function renderTopics(filterText = '') {
             const list = document.getElementById('topic-list');
             list.innerHTML = '';
@@ -494,17 +520,21 @@
         }
 
         function filterTopics() {
-            renderTopics(document.getElementById('search-input').value);
+            const query = document.getElementById('search-input').value;
+            renderTopics(query);
         }
 
+        // حذف موضوع
         function deleteTopic(topicId) {
-            if (confirm('هل أنت تأكد من رغبتك في حذف هذا الموضوع سحابياً؟')) {
+            if (confirm('هل أنت تأكد من رغبتك في حذف هذا الموضوع؟')) {
                 studyData[currentSubject] = studyData[currentSubject].filter(t => t.id !== topicId);
-                saveDataToFirebase();
+                saveData();
                 renderTopics();
+                updateGlobalStats();
             }
         }
 
+        // مراجعة موضوع
         function reviewTopic(topicId) {
             const topic = studyData[currentSubject].find(t => t.id === topicId);
             if (topic) {
@@ -512,16 +542,16 @@
                 const now = new Date().getTime();
                 let days = topic.level === 1 ? 3 : (topic.level === 2 ? 7 : 30);
                 topic.nextReview = now + (days * 24 * 60 * 60 * 1000);
-                
-                saveDataToFirebase();
+                saveData();
                 renderTopics();
                 markStreakActive();
                 
                 const subName = subjects.find(s => s.id === currentSubject).name;
-                sendTelegramMessage(`🎉 <b>أحسنت يا بطل!</b>\nتمت مراجعة موضوع: <b>${topic.title}</b> في مادة <b>${subName}</b>.\nالمراجعة القادمة بعد ${days} أيام.`);
+                sendTelegramMessage(`🎉 <b>أحسنت يا بطل!</b>\nلقد أكملت مراجعة موضوع: <b>${topic.title}</b> في مادة <b>${subName}</b>.\nالمراجعة القادمة بعد ${days} أيام.`);
             }
         }
 
+        // عرض الملفات مرفقة (PDF / صور)
         function viewFile(topicId) {
             const topic = studyData[currentSubject].find(t => t.id === topicId);
             if (!topic || !topic.file) return;
@@ -537,12 +567,8 @@
             document.getElementById('viewer-modal').style.display = 'flex';
         }
 
-        function saveDataToFirebase() {
-            db.ref('fifthGradeDB').set(studyData);
-            updateGlobalStats();
-        }
-
-        // --- نظام بوت التليغرام ---
+        // --- تكامل التليغرام المتقدم والتكرار كل 30 دقيقة ---
+        
         async function sendTelegramMessage(text) {
             const url = `https://api.telegram.org/bot${TG_CONFIG.botToken}/sendMessage`;
             try {
@@ -552,21 +578,22 @@
                     body: JSON.stringify({ chat_id: TG_CONFIG.chatId, text: text, parse_mode: 'HTML' })
                 });
             } catch (e) {
-                console.error("فشل اتصال التليغرام", e);
+                console.error("فشل إرسال رسالة التليغرام", e);
             }
         }
 
         function sendTelegramTest() {
-            sendTelegramMessage("🚀 <b>اختبار الاتصال مع Firebase والتليغرام بنجاح!</b>");
-            alert("تم إرسال رسالة الاختبار بنجاح!");
+            sendTelegramMessage("🚀 <b>اختبار الاتصال بنجاح!</b>\nأهلاً بك يا بطل الخامس العلمي، نظام التنبيهات جاهز للعمل.");
+            alert("تم إرسال رسالة اختبارية إلى التليغرام!");
         }
 
         function initTelegramAutoScheduler() {
-            setInterval(checkAndSendDueNotifications, 30 * 60 * 1000); // كل 30 دقيقة
-            setInterval(checkTelegramReply, 30 * 1000); // كل 30 ثانية
+            setInterval(checkAndSendDueNotifications, 30 * 60 * 1000);
+            setInterval(checkTelegramReply, 30 * 1000);
         }
 
         let lastUpdateId = 0;
+
         async function checkTelegramReply() {
             if (!pendingTelegramNotification) return;
 
@@ -581,13 +608,15 @@
                             const txt = update.message.text.trim().toLowerCase();
                             if (txt === 'تمام' || txt === 'yes' || txt === 'yse' || txt === 'تم') {
                                 pendingTelegramNotification = false;
-                                sendTelegramMessage("✅ <b>تم التأكيد وإيقاف التكرار بنجاح!</b>");
+                                sendTelegramMessage("✅ <b>تم التأكيد وإيقاف التكرار بنجاح!</b>\nاستمر في التفوق والاجتهاد 🌟");
                                 break;
                             }
                         }
                     }
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) {
+                console.error("خطأ في فحص ردود التليغرام", e);
+            }
         }
 
         async function checkAndSendDueNotifications() {
@@ -596,24 +625,31 @@
 
             Object.keys(studyData).forEach(subId => {
                 const subName = subjects.find(s => s.id === subId).name;
-                (studyData[subId] || []).forEach(topic => {
-                    if (now >= topic.nextReview) dueList.push({ subName, title: topic.title });
+                studyData[subId].forEach(topic => {
+                    if (now >= topic.nextReview) {
+                        dueList.push({ subName, title: topic.title });
+                    }
                 });
             });
 
             if (dueList.length > 0) {
                 pendingTelegramNotification = true;
-                let msg = `⚠️ <b>تنبيه المراجعة اليومية السحابية!</b>\nالمواضيع المطلوبة:\n\n`;
+                let msg = `⚠️ <b>تنبيه المراجعة اليومية!</b>\nلديك مواضيع تتطلب المراجعة الفورية:\n\n`;
                 dueList.slice(0, 5).forEach((item, i) => {
                     msg += `${i+1}. 📚 <b>${item.subName}:</b> ${item.title}\n`;
                 });
-                msg += `\n💬 أرسل (<b>تمام</b>) أو (<b>yes</b>) لإيقاف التكرار!`;
+                msg += `\n💬 <i>أرسل كلمة (<b>تمام</b>) أو (<b>yes</b>) لإيقاف تكرار التنبيه!</i>`;
+                
                 sendTelegramMessage(msg);
             }
         }
 
-        // --- المؤقت والتخصيص ---
-        let pomodoroInterval, timeLeft = 25 * 60, isTimerRunning = false;
+        // --- أدوات إضافية (مؤقت البومودورو، الثيم، النسخ الاحتياطي) ---
+
+        let pomodoroInterval;
+        let timeLeft = 25 * 60;
+        let isTimerRunning = false;
+
         function openPomodoro() { document.getElementById('pomodoro-modal').style.display = 'flex'; }
         
         function togglePomodoro() {
@@ -627,7 +663,7 @@
                     updateTimerDisplay();
                     if (timeLeft <= 0) {
                         clearInterval(pomodoroInterval);
-                        alert("🎉 خذ استراحة لمدة 5 دقائق!");
+                        alert("🎉 انتهى وقت التركيز! خذ استراحة لمدة 5 دقائق.");
                         resetPomodoro();
                     }
                 }, 1000);
@@ -658,16 +694,19 @@
         }
 
         function updateFileLabel(input) {
-            document.getElementById('file-name-display').innerText = input.files.length > 0 ? `📄 ${input.files[0].name}` : 'لم يتم اختيار ملف';
+            const display = document.getElementById('file-name-display');
+            if (input.files.length > 0) display.innerText = `📄 ${input.files[0].name}`;
+            else display.innerText = 'لم يتم اختيار ملف';
         }
 
         function updateGlobalStats() {
             const now = new Date().getTime();
-            let total = 0, due = 0;
+            let total = 0;
+            let due = 0;
 
             Object.keys(studyData).forEach(sub => {
-                total += (studyData[sub] || []).length;
-                due += (studyData[sub] || []).filter(t => now >= t.nextReview).length;
+                total += studyData[sub].length;
+                due += studyData[sub].filter(t => now >= t.nextReview).length;
             });
 
             document.getElementById('total-topics-count').innerText = `${total} 📚`;
@@ -681,11 +720,22 @@
 
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
+        // حفظ البيانات في LocalStorage و Firebase
+        function saveData() {
+            try {
+                localStorage.setItem('fifthGradeDB_v2', JSON.stringify(studyData));
+                db.ref('fifthGradeDB_v2').set(studyData);
+                updateGlobalStats();
+            } catch (e) {
+                alert("تنبيه: مساحة التخزين المحلية ممتلئة بالملفات! ينصح بتصدير نسخة احتياطية وحذف بعض الملفات القديمة.");
+            }
+        }
+
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(studyData));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", `5th_grade_firebase_backup_${new Date().toISOString().slice(0,10)}.json`);
+            downloadAnchor.setAttribute("download", `5th_grade_backup_${new Date().toISOString().slice(0,10)}.json`);
             document.body.appendChild(downloadAnchor);
             downloadAnchor.click();
             downloadAnchor.remove();
@@ -702,15 +752,18 @@
                 reader.onload = readerEvent => {
                     try {
                         studyData = JSON.parse(readerEvent.target.result);
-                        saveDataToFirebase();
-                        alert("تمت استعادة البيانات ومزامنتها سحابياً بنجاح!");
-                    } catch (err) { alert("الملف غير صالح!"); }
+                        saveData();
+                        renderSubjects();
+                        alert("تمت استعادة البيانات بنجاح والمزامنة مع السحابة!");
+                    } catch (err) {
+                        alert("الملف غير صالح!");
+                    }
                 }
             }
             input.click();
         }
 
-        window.onload = initFirebaseSync;
+        window.onload = init;
     </script>
 </body>
 </html>
