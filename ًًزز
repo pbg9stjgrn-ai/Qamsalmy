@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة الخامس العلمي الذكية 🚀 | رفيق التفوق</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root[data-theme="light"] {
+            --bg-body: #f4f6f9;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #10b981;
+            --primary-hover: #059669;
+            --accent: #6366f1;
+            --danger: #ef4444;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        :root[data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #10b981;
+            --primary-hover: #34d399;
+            --accent: #818cf8;
+            --danger: #f87171;
+            --border-color: #334155;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        body { background-color: var(--bg-body); color: var(--text-main); min-height: 100vh; padding-bottom: 40px; }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #059669, #10b981, #6366f1);
+            color: white; padding: 25px 20px; text-align: center; position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
+        }
+        .header-tools { position: absolute; left: 20px; top: 20px; display: flex; gap: 10px; }
+        .icon-btn {
+            background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px;
+            border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; backdrop-filter: blur(5px); transition: 0.2s;
+        }
+        .icon-btn:hover { background: rgba(255,255,255,0.4); transform: scale(1.05); }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex; justify-content: space-around; max-width: 900px; margin: -25px auto 25px auto;
+            background: var(--bg-card); border-radius: 15px; padding: 15px; box-shadow: var(--shadow);
+            border: 1px solid var(--border-color); position: relative; z-index: 10;
+        }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 1.4rem; font-weight: 900; color: var(--primary); }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+
+        /* Buttons & Forms */
+        .btn {
+            background: var(--primary); color: white; border: none; padding: 10px 20px;
+            border-radius: 10px; cursor: pointer; font-weight: bold; display: inline-flex;
+            align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+        .btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        .btn-danger { background: var(--danger); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-outline { background: transparent; border: 2px solid white; color: white; box-shadow: none; }
+        .btn-outline:hover { background: rgba(255,255,255,0.2); }
+
+        /* Search Bar */
+        .search-box {
+            width: 100%; padding: 12px 20px; border-radius: 12px; border: 1px solid var(--border-color);
+            background: var(--bg-card); color: var(--text-main); margin-bottom: 20px; font-size: 1rem;
+        }
+
+        /* Subjects Grid */
+        .subjects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        .subject-card {
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 18px;
+            padding: 25px 15px; text-align: center; cursor: pointer; position: relative; transition: 0.3s;
+            box-shadow: var(--shadow);
+        }
+        .subject-card:hover { transform: translateY(-7px); border-color: var(--primary); }
+        .subject-icon { font-size: 3rem; margin-bottom: 12px; }
+        .badge {
+            position: absolute; top: 12px; right: 12px; background: var(--danger); color: white;
+            border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center;
+            justify-content: center; font-weight: bold; font-size: 0.85rem; box-shadow: 0 2px 8px rgba(239,68,68,0.4);
+        }
+
+        /* Topics Section */
+        #subject-view { display: none; }
+        .add-topic-card {
+            background: var(--bg-card); padding: 20px; border-radius: 15px; border: 1px solid var(--border-color);
+            margin-bottom: 25px; box-shadow: var(--shadow);
+        }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        @media(max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+
+        .input-field {
+            width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;
+            background: var(--bg-body); color: var(--text-main); outline: none;
+        }
+
+        /* Topic Items */
+        .topic-item {
+            background: var(--bg-card); padding: 20px; border-radius: 15px; border-right: 6px solid var(--primary);
+            margin-bottom: 15px; border: 1px solid var(--border-color); box-shadow: var(--shadow); position: relative;
+        }
+        .topic-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .topic-title { font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .topic-actions { display: flex; gap: 8px; }
+
+        /* Files & Media */
+        .attachments-container { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        .file-badge {
+            background: var(--bg-body); border: 1px solid var(--border-color); padding: 8px 12px;
+            border-radius: 8px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; cursor: pointer;
+        }
+        .file-badge:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Repetition Progress Steps */
+        .repetition-path { display: flex; justify-content: space-between; position: relative; margin: 20px 0; max-width: 300px; }
+        .repetition-path::before {
+            content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 3px;
+            background: var(--border-color); z-index: 1; transform: translateY(-50%);
+        }
+        .step {
+            width: 32px; height: 32px; background: var(--bg-card); border: 2px solid var(--border-color);
+            border-radius: 50%; z-index: 2; display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: bold;
+        }
+        .step.completed { border-color: var(--primary); background: var(--primary); color: white; }
+
+        /* Modals */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: var(--bg-card); padding: 30px; border-radius: 20px; max-width: 500px; width: 90%;
+            max-height: 85vh; overflow-y: auto; border: 1px solid var(--border-color); position: relative;
+        }
+        .close-modal {
+            position: absolute; top: 15px; left: 15px; background: var(--danger); color: white;
+            border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer;
+        }
+
+        /* Pomodoro Widget */
+        .pomodoro-box { text-align: center; padding: 20px; }
+        .timer-display { font-size: 3.5rem; font-weight: 900; color: var(--primary); margin: 15px 0; font-family: monospace; }
+        
+        .tg-status {
+            font-size: 0.8rem; display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px; margin-top: 8px;
+        }
+        .pulse-dot { width: 8px; height: 8px; background: #34d399; border-radius: 50%; box-shadow: 0 0 8px #34d399; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-tools">
+            <button class="icon-btn" onclick="toggleTheme()" title="تغيير المظهر"><i class="fas fa-moon" id="theme-icon"></i></button>
+            <button class="icon-btn" onclick="openPomodoro()" title="مؤقت التركيز (بومودورو)"><i class="fas fa-stopwatch"></i></button>
+            <button class="icon-btn" onclick="exportData()" title="تصدير النسخة الاحتياطية"><i class="fas fa-download"></i></button>
+            <button class="icon-btn" onclick="importData()" title="استعادة النسخة الاحتياطية"><i class="fas fa-upload"></i></button>
+        </div>
+        <button id="back-btn" class="btn btn-outline" style="position:absolute; right:20px; top:20px; display:none;" onclick="goHome()">العودة 🏠</button>
+        <h1 id="header-title">الخامس العلمي 🚀</h1>
+        <p id="header-quote">منصتك الذكية للمراجعة والتفوق الأكاديمي</p>
+        <div class="tg-status"><span class="pulse-dot"></span> بوت التليغرام متصل ونشط</div>
+    </header>
+
+    <!-- الإحصائيات السريعة -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value" id="streak-count">0 🔥</div>
+            <div class="stat-label">سلسلة الأيام</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="due-count">0 ⏳</div>
+            <div class="stat-label">تنتظر المراجعة</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="total-topics-count">0 📚</div>
+            <div class="stat-label">إجمالي المواضيع</div>
+        </div>
+    </div>
+
+    <div class="container">
+        
+        <!-- الواجهة الرئيسية -->
+        <div id="home-view">
+            <div style="text-align: center; margin-bottom: 25px;">
+                <button class="btn" onclick="toggleGuide()"><i class="fas fa-lightbulb"></i> كيف تعمل خوارزمية التكرار المتباعد؟</button>
+                <button class="btn btn-outline" style="color:var(--text-main); border-color:var(--border-color);" onclick="sendTelegramTest()"><i class="fab fa-telegram"></i> اختبار التليغرام</button>
+            </div>
+            
+            <div id="guide-box" class="modal-content" style="display:none; margin: 0 auto 25px auto; width:100%;">
+                <h3 style="color: var(--primary); margin-bottom:10px;"><i class="fas fa-brain"></i> سر الذكاء الاستيعابي</h3>
+                <p>يقوم النظام بجدولة مراجعاتك تلقائياً لمنع النسيان وفق المنحنى العلمي:</p>
+                <ul style="padding-right: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li><b>المراجعة 1:</b> بعد 24 ساعة (لتثبيت الذاكرة الأولية).</li>
+                    <li><b>المراجعة 2:</b> بعد 3 أيام (نقل للذاكرة متوسطة المدى).</li>
+                    <li><b>المراجعة 3:</b> بعد 7 أيام (ترسيخ المفهوم).</li>
+                    <li><b>المراجعة 4:</b> بعد 30 يوماً (استقرار طويل المدى للامتحانات الوزارية).</li>
+                </ul>
+            </div>
+
+            <div class="subjects-grid" id="subjects-grid"></div>
+        </div>
+
+        <!-- واجهة المادة -->
+        <div id="subject-view">
+            <input type="text" id="search-input" class="search-box" placeholder="🔍 ابحث عن موضوع في هذه المادة..." oninput="filterTopics()">
+
+            <!-- نموذج إضافة موضوع جديد -->
+            <div class="add-topic-card">
+                <h3 style="margin-bottom: 15px; color: var(--primary);"><i class="fas fa-plus-circle"></i> إضافة موضوع جديد</h3>
+                <div class="form-grid">
+                    <input type="text" id="topic-input" class="input-field" placeholder="اسم الموضوع (مثال: الفصل الأول - المتجهات)">
+                    <input type="text" id="topic-notes" class="input-field" placeholder="ملاحظات أو أسئلة مهمة (اختياري)">
+                </div>
+                
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom: 15px;">
+                    <label class="btn" style="background:var(--accent); cursor:pointer;">
+                        <i class="fas fa-paperclip"></i> إرفاق صورة / PDF
+                        <input type="file" id="topic-file" accept="image/*,application/pdf" style="display:none;" onchange="updateFileLabel(this)">
+                    </label>
+                    <span id="file-name-display" style="font-size:0.85rem; color:var(--text-muted);">لم يتم اختيار ملف</span>
+                </div>
+
+                <button class="btn" onclick="addTopic()" style="width: 100%; justify-content: center;"><i class="fas fa-save"></i> حفظ الموضوع وجدولته</button>
+            </div>
+
+            <div class="topic-list" id="topic-list"></div>
+        </div>
+    </div>
+
+    <!-- modal مؤقت بومودورو -->
+    <div id="pomodoro-modal" class="modal">
+        <div class="modal-content pomodoro-box">
+            <button class="close-modal" onclick="closeModal('pomodoro-modal')">✕</button>
+            <h2>⏱️ مؤقت التركيز (Pomodoro)</h2>
+            <div class="timer-display" id="timer-display">25:00</div>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button class="btn" id="start-timer-btn" onclick="togglePomodoro()"><i class="fas fa-play"></i> بدء</button>
+                <button class="btn btn-danger" onclick="resetPomodoro()"><i class="fas fa-redo"></i> إعادة ضبط</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal عرض PDF والصور -->
+    <div id="viewer-modal" class="modal">
+        <div class="modal-content" style="max-width: 800px; width: 95%; height: 80vh;">
+            <button class="close-modal" onclick="closeModal('viewer-modal')">✕</button>
+            <div id="viewer-container" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;"></div>
+        </div>
+    </div>
+
+    <!-- تهيئة Firebase Realtime Database -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDtIJSzyMwXauTCw4hwS2qt0kD2_PRZAfQ",
+          authDomain: "hussin-1b87e.firebaseapp.com",
+          databaseURL: "https://hussin-1b87e-default-rtdb.firebaseio.com",
+          projectId: "hussin-1b87e",
+          storageBucket: "hussin-1b87e.firebasestorage.app",
+          messagingSenderId: "185167581854",
+          appId: "1:185167581854:web:d74dac0097006eb4f5618f",
+          measurementId: "G-HV9VF5W6WV"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+
+        // ربط حفظ البيانات بقاعدة بيانات Firebase
+        window.syncDataToFirebase = function() {
+            try {
+                set(ref(db, 'fifthGradeStudyData'), window.studyData);
+                set(ref(db, 'fifthGradeStreakData'), window.streakData);
+            } catch (e) {
+                console.error("خطأ في مزامنة البيانات مع Firebase:", e);
+            }
+        };
+
+        // المزامنة اللحظية مع Firebase عند فتح الصفحة أو أي تغيير خارجي
+        onValue(ref(db, 'fifthGradeStudyData'), (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                window.studyData = data;
+                localStorage.setItem('fifthGradeDB_v2', JSON.stringify(data));
+                if (window.currentSubject) {
+                    window.renderTopics();
+                } else {
+                    window.renderSubjects();
+                }
+                window.updateGlobalStats();
+            }
+        });
+
+        onValue(ref(db, 'fifthGradeStreakData'), (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                window.streakData = data;
+                localStorage.setItem('fifthGradeStreak', JSON.stringify(data));
+                window.updateStreak();
+            }
+        });
+    </script>
+
+    <script>
+        // إعدادات بوت التليغرام المدمجة
+        const TG_CONFIG = {
+            botToken: '8846376320:AAH7BP7GMqfxrNEMsGJJ7U1LbBkucasm04Q',
+            chatId: '8985579189'
+        };
+
+        const subjects = [
+            { id: 'math', name: 'الرياضيات', icon: '📐' },
+            { id: 'physics', name: 'الفيزياء', icon: '⚡' },
+            { id: 'chemistry', name: 'الكيمياء', icon: '🧪' },
+            { id: 'biology', name: 'علم الأحياء', icon: '🧬' },
+            { id: 'arabic', name: 'اللغة العربية', icon: '📖' },
+            { id: 'english', name: 'اللغة الإنكليزية', icon: '🔠' },
+            { id: 'islamic', name: 'التربية الإسلامية', icon: '🕌' }
+        ];
+
+        window.studyData = JSON.parse(localStorage.getItem('fifthGradeDB_v2')) || {};
+        window.streakData = JSON.parse(localStorage.getItem('fifthGradeStreak')) || { count: 0, lastDate: null };
+        window.currentSubject = '';
+        let pendingTelegramNotification = false;
+        let telegramCheckInterval = null;
+
+        // تهيئة التطبيق
+        function init() {
+            updateStreak();
+            renderSubjects();
+            updateGlobalStats();
+            initTelegramAutoScheduler();
+        }
+
+        // إحصائيات السلسلة (Streak)
+        function updateStreak() {
+            const today = new Date().toDateString();
+            if (streakData.lastDate) {
+                const last = new Date(streakData.lastDate);
+                const diffTime = Math.abs(new Date(today) - last);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                if (diffDays > 1) streakData.count = 0; // انقطعت السلسلة
+            }
+            document.getElementById('streak-count').innerText = `${streakData.count} 🔥`;
+        }
+
+        function markStreakActive() {
+            const today = new Date().toDateString();
+            if (streakData.lastDate !== today) {
+                streakData.count += 1;
+                streakData.lastDate = today;
+                localStorage.setItem('fifthGradeStreak', JSON.stringify(streakData));
+                updateStreak();
+                if (typeof window.syncDataToFirebase === 'function') {
+                    window.syncDataToFirebase();
+                }
+            }
+        }
+
+        // عرض المواد
+        function renderSubjects() {
+            const grid = document.getElementById('subjects-grid');
+            grid.innerHTML = '';
+            const now = new Date().getTime();
+
+            subjects.forEach(sub => {
+                if(!studyData[sub.id]) studyData[sub.id] = [];
+                let dueCount = studyData[sub.id].filter(t => now >= t.nextReview).length;
+
+                const card = document.createElement('div');
+                card.className = 'subject-card';
+                card.onclick = () => openSubject(sub.id, sub.name);
+                card.innerHTML = `
+                    ${dueCount > 0 ? `<div class="badge">${dueCount}</div>` : ''}
+                    <div class="subject-icon">${sub.icon}</div>
+                    <h3 style="font-weight:700;">${sub.name}</h3>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin-top:5px;">${studyData[sub.id].length} مواضيع</p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openSubject(id, name) {
+            currentSubject = id;
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('subject-view').style.display = 'block';
+            document.getElementById('back-btn').style.display = 'block';
+            document.getElementById('header-title').innerText = name;
+            renderTopics();
+        }
+
+        function goHome() {
+            currentSubject = '';
+            document.getElementById('home-view').style.display = 'block';
+            document.getElementById('subject-view').style.display = 'none';
+            document.getElementById('back-btn').style.display = 'none';
+            document.getElementById('header-title').innerText = 'الخامس العلمي 🚀';
+            renderSubjects();
+            updateGlobalStats();
+        }
+
+        // إضافة موضوع جديد
+        function addTopic() {
+            const titleInput = document.getElementById('topic-input');
+            const notesInput = document.getElementById('topic-notes');
+            const fileInput = document.getElementById('topic-file');
+
+            const title = titleInput.value.trim();
+            if (!title) return alert('الرجاء كتابة اسم الموضوع أولاً!');
+
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    saveTopicObject(title, notesInput.value.trim(), {
+                        name: file.name,
+                        type: file.type.includes('pdf') ? 'pdf' : 'image',
+                        data: e.target.result
+                    });
+                };
+                reader.readAsDataURL(file);
+            } else {
+                saveTopicObject(title, notesInput.value.trim(), null);
+            }
+        }
+
+        function saveTopicObject(title, notes, fileObj) {
+            const now = new Date().getTime();
+            const newTopic = {
+                id: Date.now(),
+                title: title,
+                notes: notes,
+                level: 0,
+                nextReview: now + (24 * 60 * 60 * 1000), // بعد 24 ساعة
+                file: fileObj
+            };
+
+            studyData[currentSubject].push(newTopic);
+            saveData();
+
+            // إعادة ضبط الإدخالات
+            document.getElementById('topic-input').value = '';
+            document.getElementById('topic-notes').value = '';
+            document.getElementById('topic-file').value = '';
+            document.getElementById('file-name-display').innerText = 'لم يتم اختيار ملف';
+
+            renderTopics();
+            markStreakActive();
+            
+            // إرسال إشعار فوري للتليغرام
+            const subName = subjects.find(s => s.id === currentSubject).name;
+            sendTelegramMessage(`🆕 <b>تم إضافة موضوع جديد!</b>\n📚 <b>المادة:</b> ${subName}\n📖 <b>الموضوع:</b> ${title}`);
+        }
+
+        // عرض المواضيع
+        function renderTopics(filterText = '') {
+            const list = document.getElementById('topic-list');
+            if (!list) return;
+            list.innerHTML = '';
+            const topics = studyData[currentSubject] || [];
+            const now = new Date().getTime();
+
+            const filtered = topics.filter(t => t.title.toLowerCase().includes(filterText.toLowerCase()));
+
+            if (filtered.length === 0) {
+                list.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:30px;">لا توجد مواضيع مضافة حالياً.</p>`;
+                return;
+            }
+
+            filtered.forEach((topic, index) => {
+                const needsReview = now >= topic.nextReview;
+
+                const div = document.createElement('div');
+                div.className = 'topic-item';
+                div.innerHTML = `
+                    <div class="topic-header">
+                        <div class="topic-title">
+                            <span style="background:var(--primary); color:white; border-radius:50%; width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; font-size:0.85rem;">${index + 1}</span>
+                            ${topic.title}
+                        </div>
+                        <div class="topic-actions">
+                            ${needsReview ? `<button class="btn" style="padding:6px 12px; font-size:0.85rem;" onclick="reviewTopic(${topic.id})"><i class="fas fa-sync"></i> مراجعة الآن</button>` : `<span style="color:var(--primary); font-size:0.8rem; font-weight:bold;">✅ المراجعة: ${new Date(topic.nextReview).toLocaleDateString('ar-IQ')}</span>`}
+                            <button class="btn btn-danger" style="padding:6px 10px; font-size:0.85rem;" onclick="deleteTopic(${topic.id})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+
+                    ${topic.notes ? `<p style="margin-top:10px; font-size:0.9rem; color:var(--text-muted);"><i class="fas fa-sticky-note"></i> ${topic.notes}</p>` : ''}
+
+                    <div class="repetition-path">
+                        <div class="step ${topic.level >= 1 ? 'completed' : ''}">1</div>
+                        <div class="step ${topic.level >= 2 ? 'completed' : ''}">2</div>
+                        <div class="step ${topic.level >= 3 ? 'completed' : ''}">3</div>
+                        <div class="step ${topic.level >= 4 ? 'completed' : ''}">4</div>
+                    </div>
+
+                    ${topic.file ? `
+                        <div class="attachments-container">
+                            <div class="file-badge" onclick="viewFile('${topic.id}')">
+                                <i class="fas ${topic.file.type === 'pdf' ? 'fa-file-pdf' : 'fa-image'}" style="color:var(--primary);"></i>
+                                ${topic.file.name} (عرض)
+                            </div>
+                        </div>
+                    ` : ''}
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function filterTopics() {
+            const query = document.getElementById('search-input').value;
+            renderTopics(query);
+        }
+
+        // حذف موضوع
+        function deleteTopic(topicId) {
+            if (confirm('هل أنت تأكد من رغبتك في حذف هذا الموضوع؟')) {
+                studyData[currentSubject] = studyData[currentSubject].filter(t => t.id !== topicId);
+                saveData();
+                renderTopics();
+                updateGlobalStats();
+            }
+        }
+
+        // مراجعة موضوع
+        function reviewTopic(topicId) {
+            const topic = studyData[currentSubject].find(t => t.id === topicId);
+            if (topic) {
+                topic.level += 1;
+                const now = new Date().getTime();
+                let days = topic.level === 1 ? 3 : (topic.level === 2 ? 7 : 30);
+                topic.nextReview = now + (days * 24 * 60 * 60 * 1000);
+                saveData();
+                renderTopics();
+                markStreakActive();
+                
+                const subName = subjects.find(s => s.id === currentSubject).name;
+                sendTelegramMessage(`🎉 <b>أحسنت يا بطل!</b>\nلقد أكملت مراجعة موضوع: <b>${topic.title}</b> في مادة <b>${subName}</b>.\nالمراجعة القادمة بعد ${days} أيام.`);
+            }
+        }
+
+        // عرض الملفات مرفقة (PDF / صور)
+        function viewFile(topicId) {
+            const topic = studyData[currentSubject].find(t => t.id === topicId);
+            if (!topic || !topic.file) return;
+
+            const container = document.getElementById('viewer-container');
+            container.innerHTML = '';
+
+            if (topic.file.type === 'pdf') {
+                container.innerHTML = `<iframe src="${topic.file.data}" style="width:100%; height:100%; border:none; border-radius:10px;"></iframe>`;
+            } else {
+                container.innerHTML = `<img src="${topic.file.data}" style="max-width:100%; max-height:100%; border-radius:10px; object-fit:contain;">`;
+            }
+            document.getElementById('viewer-modal').style.display = 'flex';
+        }
+
+        // --- تكامل التليغرام المتقدم والتكرار كل 30 دقيقة ---
+        
+        async function sendTelegramMessage(text) {
+            const url = `https://api.telegram.org/bot${TG_CONFIG.botToken}/sendMessage`;
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: TG_CONFIG.chatId, text: text, parse_mode: 'HTML' })
+                });
+            } catch (e) {
+                console.error("فشل إرسال رسالة التليغرام", e);
+            }
+        }
+
+        function sendTelegramTest() {
+            sendTelegramMessage("🚀 <b>اختبار الاتصال بنجاح!</b>\nأهلاً بك يا بطل الخامس العلمي، نظام التنبيهات جاهز للعمل.");
+            alert("تم إرسال رسالة اختبارية إلى التليغرام!");
+        }
+
+        // خوارزمية التذكير التلقائي كل 30 دقيقة
+        function initTelegramAutoScheduler() {
+            // فحص كل 30 دقيقة (1800000 ملي ثانية)
+            setInterval(checkAndSendDueNotifications, 30 * 60 * 1000);
+            
+            // فحص إجابة التليغرام بكلمة (تمام أو yes) كل 30 ثانية
+            setInterval(checkTelegramReply, 30 * 1000);
+        }
+
+        let lastUpdateId = 0;
+
+        async function checkTelegramReply() {
+            if (!pendingTelegramNotification) return;
+
+            const url = `https://api.telegram.org/bot${TG_CONFIG.botToken}/getUpdates?offset=${lastUpdateId + 1}`;
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                if (data.ok && data.result.length > 0) {
+                    for (let update of data.result) {
+                        lastUpdateId = update.update_id;
+                        if (update.message && update.message.text) {
+                            const txt = update.message.text.trim().toLowerCase();
+                            if (txt === 'تمام' || txt === 'yes' || txt === 'yse' || txt === 'تم') {
+                                pendingTelegramNotification = false;
+                                sendTelegramMessage("✅ <b>تم التأكيد وإيقاف التكرار بنجاح!</b>\nاستمر في التفوق والاجتهاد 🌟");
+                                break;
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("خطأ في فحص ردود التليغرام", e);
+            }
+        }
+
+        async function checkAndSendDueNotifications() {
+            const now = new Date().getTime();
+            let dueList = [];
+
+            // جمع المواضيع التي حان وقت مراجعتها (حتى 5 مواضيع)
+            Object.keys(studyData).forEach(subId => {
+                const subName = subjects.find(s => s.id === subId).name;
+                studyData[subId].forEach(topic => {
+                    if (now >= topic.nextReview) {
+                        dueList.push({ subName, title: topic.title });
+                    }
+                });
+            });
+
+            if (dueList.length > 0) {
+                pendingTelegramNotification = true; // تفعيل وضع انتظار الرد
+                let msg = `⚠️ <b>تنبيه المراجعة اليومية!</b>\nلديك مواضيع تتطلب المراجعة الفورية:\n\n`;
+                dueList.slice(0, 5).forEach((item, i) => {
+                    msg += `${i+1}. 📚 <b>${item.subName}:</b> ${item.title}\n`;
+                });
+                msg += `\n💬 <i>أرسل كلمة (<b>تمام</b>) أو (<b>yes</b>) لإيقاف تكرار التنبيه!</i>`;
+                
+                sendTelegramMessage(msg);
+            }
+        }
+
+        // --- أدوات إضافية (مؤقت البومودورو، الثيم، النسخ الاحتياطي) ---
+
+        let pomodoroInterval;
+        let timeLeft = 25 * 60;
+        let isTimerRunning = false;
+
+        function openPomodoro() { document.getElementById('pomodoro-modal').style.display = 'flex'; }
+        
+        function togglePomodoro() {
+            const btn = document.getElementById('start-timer-btn');
+            if (isTimerRunning) {
+                clearInterval(pomodoroInterval);
+                btn.innerHTML = `<i class="fas fa-play"></i> استئناف`;
+            } else {
+                pomodoroInterval = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    if (timeLeft <= 0) {
+                        clearInterval(pomodoroInterval);
+                        alert("🎉 انتهى وقت التركيز! خذ استراحة لمدة 5 دقائق.");
+                        resetPomodoro();
+                    }
+                }, 1000);
+                btn.innerHTML = `<i class="fas fa-pause"></i> إيقاف مؤقت`;
+            }
+            isTimerRunning = !isTimerRunning;
+        }
+
+        function resetPomodoro() {
+            clearInterval(pomodoroInterval);
+            timeLeft = 25 * 60;
+            isTimerRunning = false;
+            updateTimerDisplay();
+            document.getElementById('start-timer-btn').innerHTML = `<i class="fas fa-play"></i> بدء`;
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+            const s = (timeLeft % 60).toString().padStart(2, '0');
+            document.getElementById('timer-display').innerText = `${m}:${s}`;
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            document.getElementById('theme-icon').className = newTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        function updateFileLabel(input) {
+            const display = document.getElementById('file-name-display');
+            if (input.files.length > 0) display.innerText = `📄 ${input.files[0].name}`;
+            else display.innerText = 'لم يتم اختيار ملف';
+        }
+
+        function updateGlobalStats() {
+            const now = new Date().getTime();
+            let total = 0;
+            let due = 0;
+
+            Object.keys(studyData).forEach(sub => {
+                total += studyData[sub].length;
+                due += studyData[sub].filter(t => now >= t.nextReview).length;
+            });
+
+            document.getElementById('total-topics-count').innerText = `${total} 📚`;
+            document.getElementById('due-count').innerText = `${due} ⏳`;
+        }
+
+        function toggleGuide() {
+            const guide = document.getElementById('guide-box');
+            guide.style.display = guide.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function saveData() {
+            try {
+                localStorage.setItem('fifthGradeDB_v2', JSON.stringify(studyData));
+                updateGlobalStats();
+                if (typeof window.syncDataToFirebase === 'function') {
+                    window.syncDataToFirebase();
+                }
+            } catch (e) {
+                alert("تنبيه: مساحة التخزين المحلية ممتلئة بالملفات! ينصح بتصدير نسخة احتياطية وحذف بعض الملفات القديمة.");
+            }
+        }
+
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(studyData));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `5th_grade_backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'application/json';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
+                reader.onload = readerEvent => {
+                    try {
+                        studyData = JSON.parse(readerEvent.target.result);
+                        saveData();
+                        renderSubjects();
+                        alert("تمت استعادة البيانات بنجاح والمزامنة مع Firebase!");
+                    } catch (err) {
+                        alert("الملف غير صالح!");
+                    }
+                }
+            }
+            input.click();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
